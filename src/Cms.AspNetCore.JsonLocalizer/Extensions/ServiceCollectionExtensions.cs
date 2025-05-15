@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using Cms.AspNetCore.JsonLocalizer.Abstractions;
 using Cms.AspNetCore.JsonLocalizer.Infrastructure;
 using Cms.AspNetCore.JsonLocalizer.Options;
