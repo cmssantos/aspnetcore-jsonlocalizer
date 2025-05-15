@@ -1,13 +1,12 @@
 name: CI Pack NuGet
 
 on:
-  workflow_dispatch:
-
-permissions:
-  contents: write
+  push:
+    branches:
+      - main
 
 jobs:
-  pack:
+  build-test-pack:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,32 +18,6 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Fetch all tags
-        run: git fetch --tags
-
-      - name: Get latest version and bump patch
-        id: version
-        run: |
-          VERSION=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
-          echo "Latest version: $VERSION"
-
-          if [[ -z "$VERSION" ]]; then
-            VERSION="v0.1.0"
-          fi
-
-          BASE=${VERSION#v}
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE"
-          NEW_PATCH=$((PATCH + 1))
-          NEW_VERSION="v$MAJOR.$MINOR.$NEW_PATCH"
-          echo "New version: $NEW_VERSION"
-
-          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "new_version_number=${NEW_VERSION#v}" >> $GITHUB_OUTPUT
-
-      - name: Update package version in .csproj
-        run: |
-          find ./src -name "*.csproj" -print0 | xargs -0 sed -i "s/<Version>.*<\/Version>/<Version>${{ steps.version.outputs.new_version_number }}<\/Version>/"
-
       - name: Restore dependencies
         run: dotnet restore
 
@@ -54,21 +27,50 @@ jobs:
       - name: Run tests
         run: dotnet test --configuration Release --no-build --verbosity normal
 
+      - name: Get latest version tag
+        id: version
+        run: |
+          latest_tag=$(git tag --list "v*" --sort=-creatordate | head -n 1)
+          echo "Latest tag: $latest_tag"
+
+          if [[ "$latest_tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            major="${BASH_REMATCH[1]}"
+            minor="${BASH_REMATCH[2]}"
+            patch="${BASH_REMATCH[3]}"
+            new_patch=$((patch + 1))
+            new_version="$major.$minor.$new_patch"
+          else
+            new_version="0.1.0"
+          fi
+
+          echo "New version: $new_version"
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Update .csproj version
+        run: |
+          find ./src -name "*.csproj" -exec sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.new_version }}</Version>|" {} \;
+
       - name: Pack NuGet package
         run: dotnet pack --configuration Release --no-build --output ./artifacts
 
-      - name: Upload package as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuget-package-${{ steps.version.outputs.new_version }}
-          path: ./artifacts/*.nupkg
+      - name: Generate changelog
+        run: |
+          echo "Release v${{ steps.version.outputs.new_version }}" > changelog.txt
+          git log -1 --pretty=format:"- %s" >> changelog.txt
 
-      - name: Configure Git for tagging
+      - name: Create Git tag
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          git tag v${{ steps.version.outputs.new_version }}
+          git push origin v${{ steps.version.outputs.new_version }}
 
-      - name: Create and push new tag
-        run: |
-          git tag ${{ steps.version.outputs.new_version }}
-          git push origin ${{ steps.version.outputs.new_version }}
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.new_version }}
+          name: Release v${{ steps.version.outputs.new_version }}
+          body_path: changelog.txt
+          files: ./artifacts/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
