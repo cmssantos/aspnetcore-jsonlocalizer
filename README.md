@@ -1,5 +1,8 @@
 # 📦 Cms.AspNetCore.JsonLocalizer
 
+[![NuGet](https://img.shields.io/nuget/v/Cms.AspNetCore.JsonLocalizer.svg)](https://www.nuget.org/packages/Cms.AspNetCore.JsonLocalizer)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **Cms.AspNetCore.JsonLocalizer** é uma biblioteca leve e extensível para suporte à localização no ASP.NET Core usando arquivos JSON estruturados. Ela permite utilizar **chaves simples e aninhadas**, com suporte a **parâmetros de formatação**, **fallback de cultura** e resolução automática de cultura a partir do cabeçalho `Accept-Language`.
 
 ---

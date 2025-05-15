@@ -1,3 +1,4 @@
+# Como executar
 #.\publish.ps1 -Version "1.0.0" -Suffix "development" -ApiKey "SUA_API_KEY"
 
 param(

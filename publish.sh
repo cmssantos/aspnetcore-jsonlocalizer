@@ -1,3 +1,4 @@
+# Como executar
 #./publish.sh 1.0.0 development SUA_API_KEY
 
 #!/bin/bash
@@ -19,7 +20,7 @@ else
   API_KEY=$3
 fi
 
-BUILD_FILE="./buildnumber.txt"
+BUILD_FILE="./buildnumber"
 
 # Ler build number ou iniciar em 0
 if [ -f "$BUILD_FILE" ]; then
