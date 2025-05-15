@@ -27,34 +27,10 @@ jobs:
       - name: Run tests
         run: dotnet test --configuration Release --no-build --verbosity normal
 
-      - name: Get latest version tag
-        id: version
-        run: |
-          latest_tag=$(git tag --list "v*" --sort=-creatordate | head -n 1)
-          echo "Latest tag: $latest_tag"
-
-          if [[ "$latest_tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-            major="${BASH_REMATCH[1]}"
-            minor="${BASH_REMATCH[2]}"
-            patch="${BASH_REMATCH[3]}"
-            new_patch=$((patch + 1))
-            new_version="$major.$minor.$new_patch"
-          else
-            new_version="0.1.0"
-          fi
-
-          echo "New version: $new_version"
-          echo "new_version=$new_version" >> $GITHUB_OUTPUT
-
-      - name: Update .csproj version
-        run: |
-          find ./src -name "*.csproj" -exec sed -i "s|<Version>.*</Version>|<Version>${{ steps.version.outputs.new_version }}</Version>|" {} \;
+      # [Passos para versionamento, pack, etc]
 
       - name: Pack NuGet package
         run: dotnet pack --configuration Release --no-build --output ./artifacts
-
-      - name: List artifacts directory (debug)
-        run: ls -l ./artifacts
 
       - name: Generate changelog
         run: |
@@ -66,25 +42,26 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git tag v${{ steps.version.outputs.new_version }} || echo "Tag already exists"
-          git push origin v${{ steps.version.outputs.new_version }} || echo "Tag push failed, maybe already exists"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} v${{ steps.version.outputs.new_version }} || echo "Tag push failed, maybe already exists"
 
       - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1
         with:
-            tag_name: v${{ steps.version.outputs.new_version }}
-            release_name: Release v${{ steps.version.outputs.new_version }}
-            body_path: changelog.txt
-            draft: false
-            prerelease: false
+          tag_name: v${{ steps.version.outputs.new_version }}
+          release_name: Release v${{ steps.version.outputs.new_version }}
+          body_path: changelog.txt
+          draft: false
+          prerelease: false
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload release assets
+      - name: Upload NuGet package
         uses: actions/upload-release-asset@v1
         with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
-            asset_path: ./artifacts/*.nupkg
-            asset_name: mypackage-${{ steps.version.outputs.new_version }}.nupkg
-            asset_content_type: application/octet-stream
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/mypackage.${{ steps.version.outputs.new_version }}.nupkg
+          asset_name: mypackage.v${{ steps.version.outputs.new_version }}.nupkg
+          asset_content_type: application/octet-stream
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
