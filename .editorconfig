@@ -2,7 +2,7 @@
 root = true
 
 #####################################################
-# Global settings (applies to all file types
+# Global settings (applies to all file types)
 #####################################################
 [*]
 charset = utf-8                        # Use UTF-8 encoding
