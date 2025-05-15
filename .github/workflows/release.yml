@@ -3,7 +3,7 @@ name: Release Package
 on:
   push:
     tags:
-      - 'v*.*.*'    # dispara release quando criar tag semântica, ex: v1.0.0
+      - 'v*'   # qualquer tag começando com "v"
 
 jobs:
   release:
@@ -27,10 +27,31 @@ jobs:
       - name: Run tests
         run: dotnet test --configuration Release --no-build --verbosity normal
 
-      - name: Pack NuGet package
-        run: dotnet pack --configuration Release --no-build --output ./artifacts
+      - name: Extract version info
+        id: version
+        run: |
+          echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - name: Publish NuGet package
+          if [[ "${TAG_NAME}" == *-* ]]; then
+            VERSION_SUFFIX="${TAG_NAME#*-}"
+          else
+            VERSION_SUFFIX=""
+          fi
+          echo "VERSION_SUFFIX=$VERSION_SUFFIX" >> $GITHUB_ENV
+
+          VERSION_BASE="${TAG_NAME#v}"
+          VERSION_BASE="${VERSION_BASE%%-*}"
+          echo "VERSION_BASE=$VERSION_BASE" >> $GITHUB_ENV
+
+      - name: Pack NuGet package
+        run: |
+          if [ -z "$VERSION_SUFFIX" ]; then
+            dotnet pack --configuration Release --no-build --output ./artifacts /p:PackageVersion=$VERSION_BASE
+          else
+            dotnet pack --configuration Release --no-build --output ./artifacts /p:PackageVersion=$VERSION_BASE --version-suffix $VERSION_SUFFIX
+          fi
+
+      - name: Setup NuGet
         uses: nuget/setup-nuget@v1
 
       - name: Push NuGet package
