@@ -3,7 +3,6 @@
   <PropertyGroup>
     <PackageId>Cms.AspNetCore.JsonLocalizer</PackageId>
     <Title>Cms.AspNetCore.JsonLocalizer</Title>
-    <Version>1.0.0</Version>
     <Description>JSON-based localization for ASP.NET Core. Supports nested keys and culture fallback.</Description>
     <PackageTags>localization;json;aspnetcore;i18n;l10n</PackageTags>
     <RepositoryUrl>https://github.com/cmssantos/aspnetcore-jsonlocalizer</RepositoryUrl>
