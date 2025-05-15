@@ -1,0 +1,61 @@
+name: CI Pack NuGet
+
+on:
+  workflow_dispatch:
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      - name: Get latest version and bump patch
+        id: version
+        run: |
+          VERSION=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
+          echo "Latest version: $VERSION"
+
+          if [[ -z "$VERSION" ]]; then
+            VERSION="v0.1.0"
+          fi
+
+          BASE=${VERSION#v}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE"
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="v$MAJOR.$MINOR.$NEW_PATCH"
+          echo "New version: $NEW_VERSION"
+
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "new_version_number=${NEW_VERSION#v}" >> $GITHUB_OUTPUT
+
+      - name: Update package version in .csproj
+        run: |
+          find ./src -name "*.csproj" -print0 | xargs -0 sed -i "s/<Version>.*<\/Version>/<Version>${{ steps.version.outputs.new_version_number }}<\/Version>/"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
+
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --no-build --output ./artifacts
+
+      - name: Upload package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package-${{ steps.version.outputs.new_version }}
+          path: ./artifacts/*.nupkg

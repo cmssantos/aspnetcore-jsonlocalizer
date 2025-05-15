@@ -6,6 +6,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
+    <VersionPrefix>1.0</VersionPrefix>
     <Authors>Cleudice Santos</Authors>
     <Company>Cms</Company>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
