@@ -1,0 +1,144 @@
+# Top-most EditorConfig file
+root = true
+
+#####################################################
+# Global settings (applies to all file types)
+#####################################################
+[*]
+charset = utf-8                        # Use UTF-8 encoding
+end_of_line = crlf                     # Use CRLF for Windows compatibility
+insert_final_newline = true           # Ensure file ends with a newline
+trim_trailing_whitespace = true       # Remove trailing whitespace
+
+indent_style = space                  # Use spaces, not tabs
+indent_size = 4
+tab_width = 4
+
+#####################################################
+# C# files settings
+#####################################################
+[*.cs]
+
+############################################
+# Code Style: Typing preferences
+############################################
+
+# Prefer 'var' when type is obvious
+csharp_style_var_when_type_is_apparent = true:suggestion
+# Prefer explicit type when type is not obvious
+csharp_style_var_elsewhere = false:suggestion
+
+# Use built-in types (e.g., int, string) instead of .NET types (Int32, String)
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
+
+############################################
+# Code Style: Braces and expressions
+############################################
+
+# Prefer braces even for single-line statements (Clean Code principle)
+csharp_prefer_braces = true:suggestion
+
+# Use expression-bodied members when possible
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = when_on_single_line:suggestion
+
+############################################
+# Code Style: Qualification (this.)
+############################################
+
+# Avoid unnecessary use of 'this.'
+dotnet_style_qualification_for_field = false:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
+dotnet_style_qualification_for_event = false:warning
+
+############################################
+# Namespaces
+############################################
+
+# Require file-scoped namespaces (C# 10+)
+csharp_style_namespace_declarations = file_scoped:error
+
+############################################
+# Naming Conventions
+############################################
+
+# Private fields -> _camelCase
+dotnet_naming_rule.private_fields_should_be_camel_case_with_underscore.severity = suggestion
+dotnet_naming_rule.private_fields_should_be_camel_case_with_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_should_be_camel_case_with_underscore.style = camel_case_with_underscore
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.required_modifiers =
+
+dotnet_naming_style.camel_case_with_underscore.capitalization = camel_case
+dotnet_naming_style.camel_case_with_underscore.required_prefix = _
+
+# Public members -> PascalCase
+dotnet_naming_rule.public_members_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.public_members_should_be_pascal_case.symbols = public_symbols
+dotnet_naming_rule.public_members_should_be_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.public_symbols.applicable_kinds = property, method, field, event
+dotnet_naming_symbols.public_symbols.applicable_accessibilities = public, protected
+dotnet_naming_symbols.public_symbols.required_modifiers =
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+############################################
+# Readonly and immutability
+############################################
+
+# Prefer 'readonly' for fields when possible
+dotnet_style_readonly_field = true:suggestion
+
+############################################
+# Layout and spacing
+############################################
+
+# Insert a blank line between method definitions
+csharp_new_line_between_members = true
+
+############################################
+# Analyzers and diagnostics
+############################################
+
+# Unused private members
+dotnet_diagnostic.IDE0051.severity = warning
+
+# Unused private fields
+dotnet_diagnostic.IDE0052.severity = warning
+
+# Unused parameters
+dotnet_diagnostic.IDE0060.severity = warning
+
+# Public members without XML docs
+dotnet_diagnostic.CS1591.severity = warning
+
+############################################
+# Optional: File header template
+############################################
+
+file_header_template = Copyright (c) 2025 Your Company. All rights reserved.
+
+#####################################################
+# JSON files
+#####################################################
+[*.json]
+indent_style = space
+indent_size = 2
+
+#####################################################
+# XML files
+#####################################################
+[*.xml]
+indent_style = space
+indent_size = 2
+
+#####################################################
+# Markdown files
+#####################################################
+[*.md]
+trim_trailing_whitespace = false      # Important for formatting in markdown

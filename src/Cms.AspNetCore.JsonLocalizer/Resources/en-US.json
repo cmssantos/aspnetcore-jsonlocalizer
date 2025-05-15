@@ -1,0 +1,7 @@
+{
+  "errors": {
+    "notFound": {
+      "user": "User {0} not found."
+    }
+  }
+}
