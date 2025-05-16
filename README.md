@@ -164,8 +164,8 @@ public interface IJsonStringLocalizer
 
 ## 🌐 Suporte a Cultura
 
--   A cultura é extraída automaticamente do cabeçalho `Accept-Language`, com fallback para a cultura padrão (`DefaultCulture`).
--   Exemplo de header HTTP suportado:
+-  A cultura é extraída automaticamente do cabeçalho `Accept-Language`, com fallback para a cultura padrão (`DefaultCulture`).
+-  Exemplo de header HTTP suportado:
     ```
     Accept-Language: pt-BR
     ```
@@ -195,9 +195,9 @@ var message = localizer["greeting"];
 
 ## 🧼 Boas Práticas
 
--   Use nomes de arquivos e culturas consistentes (`xx-YY.json`).
--   Prefira chaves semânticas e organizadas, como `"errors.notFound.user"`.
--   Evite valores hardcoded em seu código. Use sempre o localizador injetado.
+-  Use nomes de arquivos e culturas consistentes (`xx-YY.json`).
+-  Prefira chaves semânticas e organizadas, como `"errors.notFound.user"`.
+-  Evite valores hardcoded em seu código. Use sempre o localizador injetado.
 
 ---
 
