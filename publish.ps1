@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Mandatory=$true)][string]$Version,
-    [string]$Suffix = "",
+    [Parameter(Mandatory=$true)][string]$Suffix = "",
     [Parameter(Mandatory=$true)][string]$ApiKey
 )
 

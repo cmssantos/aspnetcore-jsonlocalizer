@@ -1,1 +1,0 @@
-D:\Repos\aspnetcore-jsonlocalizer\.sonarqube\out\0

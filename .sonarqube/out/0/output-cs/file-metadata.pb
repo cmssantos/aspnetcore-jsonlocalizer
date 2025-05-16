@@ -1,9 +1,0 @@
-Œ
-€D:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\obj\Debug\net8.0\Cms.AspNetCore.JsonLocalizer.AssemblyInfo.csutf-8Ž
-‚D:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.csutf-8Ž
-‚D:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\obj\Debug\net8.0\Cms.AspNetCore.JsonLocalizer.GlobalUsings.g.csutf-8n
-eD:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Options\JsonLocalizationOptions.csutf-8q
-hD:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Infrastructure\JsonStringLocalizer.csutf-8z
-qD:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Infrastructure\JsonLocalizationFileAccessor.csutf-8u
-lD:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Extensions\ServiceCollectionExtensions.csutf-8p
-gD:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Abstractions\IJsonStringLocalizer.csutf-8

@@ -1,6 +1,0 @@
-projectKey=aspnetcore-jsonlocalizer
-serverUrl=http://10.0.0.10:9000
-serverVersion=25.1.0.102122
-dashboardUrl=http://10.0.0.10:9000/dashboard?id=aspnetcore-jsonlocalizer
-ceTaskId=dae74e1e-b35e-4e4c-985c-7f82b044e5d4
-ceTaskUrl=http://10.0.0.10:9000/api/ce/task?id=dae74e1e-b35e-4e4c-985c-7f82b044e5d4

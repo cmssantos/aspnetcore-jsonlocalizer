@@ -1,1 +1,0 @@
-|RfD:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Cms.AspNetCore.JsonLocalizer.csproj¢net8.0òCSharp12
