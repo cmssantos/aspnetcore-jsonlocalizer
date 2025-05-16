@@ -1,0 +1,10 @@
+ö
+éD:\Repos\aspnetcore-jsonlocalizer\tests\Cms.AspNetCore.JsonLocalizer.Tests\obj\Debug\net8.0\Cms.AspNetCore.JsonLocalizer.Tests.AssemblyInfo.csutf-8ñ
+äD:\Repos\aspnetcore-jsonlocalizer\tests\Cms.AspNetCore.JsonLocalizer.Tests\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.csutf-8ú
+êD:\Repos\aspnetcore-jsonlocalizer\tests\Cms.AspNetCore.JsonLocalizer.Tests\obj\Debug\net8.0\Cms.AspNetCore.JsonLocalizer.Tests.GlobalUsings.g.csutf-8Ç
+wD:\cleudice.santos\.nuget\packages\microsoft.net.test.sdk\17.12.0\build\netcoreapp3.1\Microsoft.NET.Test.Sdk.Program.csutf-8~
+uD:\Repos\aspnetcore-jsonlocalizer\tests\Cms.AspNetCore.JsonLocalizer.Tests\Infrastructure\JsonStringLocalizerTests.csutf-8á
+~D:\Repos\aspnetcore-jsonlocalizer\tests\Cms.AspNetCore.JsonLocalizer.Tests\Infrastructure\JsonLocalizationFileAccessorTests.csutf-8w
+nD:\Repos\aspnetcore-jsonlocalizer\tests\Cms.AspNetCore.JsonLocalizer.Tests\Fixtures\LocalizationTestFixture.csutf-8v
+mD:\Repos\aspnetcore-jsonlocalizer\tests\Cms.AspNetCore.JsonLocalizer.Tests\Fixtures\LocalizationCollection.csutf-8Ç
+yD:\Repos\aspnetcore-jsonlocalizer\tests\Cms.AspNetCore.JsonLocalizer.Tests\Extensions\ServiceCollectionExtensionsTests.csutf-8

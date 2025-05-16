@@ -1,0 +1,8 @@
+﻿D:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Abstractions\IJsonStringLocalizer.cs
+D:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Extensions\ServiceCollectionExtensions.cs
+D:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Infrastructure\JsonLocalizationFileAccessor.cs
+D:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Infrastructure\JsonStringLocalizer.cs
+D:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Options\JsonLocalizationOptions.cs
+D:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Resources\en-US.json
+D:\Repos\aspnetcore-jsonlocalizer\src\Cms.AspNetCore.JsonLocalizer\Resources\pt-BR.json
+D:\Repos\aspnetcore-jsonlocalizer\README.md
