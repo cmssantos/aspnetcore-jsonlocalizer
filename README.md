@@ -43,7 +43,7 @@ Resources/
 
 ### 2. Exemplo de Arquivo JSON
 
-#### `Resources/en-US.json`:
+#### `Resources/en-US.json`
 
 ```json
 {
@@ -56,7 +56,7 @@ Resources/
 }
 ```
 
-#### `Resources/pt-BR.json`:
+#### `Resources/pt-BR.json`
 
 ```json
 {
@@ -164,7 +164,7 @@ public interface IJsonStringLocalizer
 
 ## 🌐 Suporte a Cultura
 
--  A cultura é extraída automaticamente do cabeçalho `Accept-Language`, com fallback para a cultura padrão (`DefaultCulture`).
+- A cultura é extraída automaticamente do cabeçalho `Accept-Language`, com fallback para a cultura padrão (`DefaultCulture`).
 - Exemplo de header HTTP suportado:
     ```
     Accept-Language: pt-BR
