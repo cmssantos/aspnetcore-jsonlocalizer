@@ -46,8 +46,8 @@ jobs:
             /p:CoverletOutputFormat=cobertura \
             /p:CoverletOutput=./TestResults/
 
-      - name: Upload coverage artifact
+      - name: Upload cobertura coverage report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: ./tests/Cms.AspNetCore.JsonLocalizer.Tests/TestResults/coverage.cobertura.xml
+          path: ./tests/Cms.AspNetCore.JsonLocalizer.Tests/TestResults/coverage.*.cobertura.xml
