@@ -20,33 +20,39 @@ public static class ServiceCollectionExtensions
     /// <param name="configure">An action to configure <see cref="JsonLocalizationOptions"/> such as resource path and default culture.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> for chaining.</returns>
     public static IServiceCollection AddJsonLocalization(this IServiceCollection services,
-        Action<JsonLocalizationOptions> configure)
+    Action<JsonLocalizationOptions> configure)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configure);
 
+        IServiceCollection safeServices = services;
+
         // Configure localization options
-        services.Configure(configure);
+        safeServices.Configure(configure);
 
         // Register HttpContextAccessor to access HTTP context inside services
-        services.AddHttpContextAccessor();
+        safeServices.AddHttpContextAccessor();
 
         // Register a singleton JsonLocalizationFileAccessor to manage JSON files and caching
-        services.AddSingleton(sp =>
+        safeServices.AddSingleton(sp =>
         {
-            JsonLocalizationOptions options = sp.GetRequiredService<IOptions<JsonLocalizationOptions>>().Value;
+            JsonLocalizationOptions options = sp.GetRequiredService<IOptions<JsonLocalizationOptions>>().Value
+                ?? throw new InvalidOperationException("JsonLocalizationOptions is not configured.");
+
             return new JsonLocalizationFileAccessor(options.ResourcesPath);
         });
 
         // Register scoped IJsonStringLocalizer that resolves culture from the HTTP request or falls back to default culture
-        services.AddScoped<IJsonStringLocalizer>(sp =>
+        safeServices.AddScoped<IJsonStringLocalizer>(sp =>
         {
-            JsonLocalizationFileAccessor accessor = sp.GetRequiredService<JsonLocalizationFileAccessor>();
-            HttpContext httpContext = sp.GetRequiredService<IHttpContextAccessor>().HttpContext;
-            JsonLocalizationOptions options = sp.GetRequiredService<IOptions<JsonLocalizationOptions>>().Value;
+            var accessor = sp.GetRequiredService<JsonLocalizationFileAccessor>();
+            var httpContext = sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext;
+            var options = sp.GetRequiredService<IOptions<JsonLocalizationOptions>>()?.Value;
 
-            // Attempt to get culture from Accept-Language header, fallback to default culture or current culture
-            var acceptLanguage = httpContext?.Request.Headers["Accept-Language"].FirstOrDefault();
+            if (options == null)
+                throw new InvalidOperationException("JsonLocalizationOptions is not configured.");
+
+            var acceptLanguage = httpContext?.Request?.Headers["Accept-Language"].FirstOrDefault();
             var culture = !string.IsNullOrWhiteSpace(acceptLanguage)
                 ? acceptLanguage
                 : options.DefaultCulture ?? CultureInfo.CurrentCulture.Name;
@@ -54,6 +60,6 @@ public static class ServiceCollectionExtensions
             return new JsonStringLocalizer(accessor, culture);
         });
 
-        return services;
+        return safeServices;
     }
 }
