@@ -11,13 +11,13 @@
 
 ## ✨ Principais Recursos
 
--   ✅ Suporte a arquivos de localização em JSON
--   ✅ Resolução automática da cultura via HTTP
--   ✅ Chaves aninhadas via notação de ponto (`"errors.notFound.user"`)
--   ✅ Suporte a argumentos formatáveis (`"User {0} not found"`)
--   ✅ Fallback automático para cultura padrão
--   ✅ Cache em memória para performance
--   ✅ Injeção via `IJsonStringLocalizer`
+-  ✅ Suporte a arquivos de localização em JSON
+-  ✅ Resolução automática da cultura via HTTP
+-  ✅ Chaves aninhadas via notação de ponto (`"errors.notFound.user"`)
+-  ✅ Suporte a argumentos formatáveis (`"User {0} not found"`)
+-  ✅ Fallback automático para cultura padrão
+-  ✅ Cache em memória para performance
+-  ✅ Injeção via `IJsonStringLocalizer`
 
 ---
 
@@ -85,7 +85,7 @@ builder.Services.AddJsonLocalization(options =>
 
 ### 4. Injeção e Uso
 
-#### Em uma Controller ou Serviço:
+#### Em uma Controller ou Serviço
 
 ```csharp
 public class UserController : ControllerBase
