@@ -1,5 +1,3 @@
-// Copyright (c) Cleudice Santos. All Rights Reserved. Licensed under the MIT License.  See LICENsE in the project root for license information.
-
 using System.Text.Json.Nodes;
 
 namespace Cms.AspNetCore.JsonLocalizer.Infrastructure;
