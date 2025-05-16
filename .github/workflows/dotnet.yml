@@ -41,15 +41,13 @@ jobs:
 
       - name: Run Tests with Coverage
         run: |
-          dotnet test \
+          dotnet test ./tests/Cms.AspNetCore.JsonLocalizer.Tests \
             /p:CollectCoverage=true \
             /p:CoverletOutputFormat=cobertura \
-            /p:CoverletOutput=./TestResults/ \
-            --no-build
+            /p:CoverletOutput=./TestResults/
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: '**/TestResults/coverage.cobertura.xml'
-
+          path: ./tests/Cms.AspNetCore.JsonLocalizer.Tests/TestResults/coverage.cobertura.xml
