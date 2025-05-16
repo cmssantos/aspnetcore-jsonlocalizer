@@ -51,3 +51,13 @@ jobs:
         with:
           name: coverage-report
           path: ./tests/Cms.AspNetCore.JsonLocalizer.Tests/TestResults/coverage.*.cobertura.xml
+
+      - name: Send coverage to Codacy
+        run: |
+          curl -Ls https://coverage.codacy.com/get.sh > codacy-coverage-reporter.sh
+          chmod +x codacy-coverage-reporter.sh
+          ./codacy-coverage-reporter.sh report \
+            --language csharp \
+            --coverage-reports ./tests/Cms.AspNetCore.JsonLocalizer.Tests/TestResults/coverage.net8.0.cobertura.xml
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
