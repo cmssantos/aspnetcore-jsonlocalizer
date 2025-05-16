@@ -45,14 +45,18 @@ public static class ServiceCollectionExtensions
         // Register scoped IJsonStringLocalizer that resolves culture from the HTTP request or falls back to default culture
         safeServices.AddScoped<IJsonStringLocalizer>(sp =>
         {
-            var accessor = sp.GetRequiredService<JsonLocalizationFileAccessor>();
-            var httpContext = sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext;
-            var options = sp.GetRequiredService<IOptions<JsonLocalizationOptions>>()?.Value;
+            JsonLocalizationFileAccessor accessor = sp.GetRequiredService<JsonLocalizationFileAccessor>();
 
-            if (options == null)
-                throw new InvalidOperationException("JsonLocalizationOptions is not configured.");
+            IHttpContextAccessor httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>()
+                ?? throw new InvalidOperationException("IHttpContextAccessor is not registered.");
 
-            var acceptLanguage = httpContext?.Request?.Headers["Accept-Language"].FirstOrDefault();
+            HttpContext? httpContext = httpContextAccessor.HttpContext;
+
+            JsonLocalizationOptions? options = sp.GetRequiredService<IOptions<JsonLocalizationOptions>>()?.Value
+                ?? throw new InvalidOperationException("JsonLocalizationOptions is not configured.");
+
+            string? acceptLanguage = httpContext?.Request?.Headers["Accept-Language"].FirstOrDefault();
+
             var culture = !string.IsNullOrWhiteSpace(acceptLanguage)
                 ? acceptLanguage
                 : options.DefaultCulture ?? CultureInfo.CurrentCulture.Name;
