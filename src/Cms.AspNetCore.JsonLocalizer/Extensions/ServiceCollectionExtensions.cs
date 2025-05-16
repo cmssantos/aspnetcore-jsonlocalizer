@@ -22,6 +22,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddJsonLocalization(this IServiceCollection services,
         Action<JsonLocalizationOptions> configure)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configure);
+
         // Configure localization options
         services.Configure(configure);
 
