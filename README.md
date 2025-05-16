@@ -1,7 +1,6 @@
 # 📦 Cms.AspNetCore.JsonLocalizer
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/SEU_PROJECT_ID)](https://www.codacy.com/gh/SEU_USUARIO/SEU_REPOSITORIO/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SEU_USUARIO/SEU_REPOSITORIO&amp;utm_campaign=Badge_Grade)
-[![Codacy Coverage](https://app.codacy.com/project/badge/Coverage/SEU_PROJECT_ID)](https://www.codacy.com/gh/SEU_USUARIO/SEU_REPOSITORIO/dashboard?utm_source=github.com&utm_medium=referral&utm_content=SEU_USUARIO/SEU_REPOSITORIO&utm_campaign=Badge_Coverage)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/25eb91ad8ce54cc7839e099a9723c52f)](https://app.codacy.com/gh/cmssantos/aspnetcore-jsonlocalizer/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![NuGet](https://img.shields.io/nuget/v/Cms.AspNetCore.JsonLocalizer.svg)](https://www.nuget.org/packages/Cms.AspNetCore.JsonLocalizer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
