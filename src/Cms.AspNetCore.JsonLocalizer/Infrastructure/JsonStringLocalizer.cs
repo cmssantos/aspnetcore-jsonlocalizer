@@ -22,7 +22,12 @@ public class JsonStringLocalizer(JsonLocalizationFileAccessor accessor, string c
 
     private string Format(string key, object[] args)
     {
-        var template = _accessor.GetValue(key, _culture);
-        return string.Format(CultureInfo.CurrentCulture, template ?? key, args);
+        var value = _accessor.GetValue(key, _culture);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return key;
+        }
+
+        return args is { Length: > 0 } ? string.Format(value, args) : value;
     }
 }
