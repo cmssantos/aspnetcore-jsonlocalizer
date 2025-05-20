@@ -33,4 +33,11 @@ public class ServiceCollectionExtensionsTests
         Assert.NotNull(localizer);
         Assert.IsType<JsonStringLocalizer>(localizer);
     }
+
+    [Fact]
+    public void AddJsonLocalization_ThrowsArgumentNull_WhenConfigureIsNull()
+    {
+        var services = new ServiceCollection();
+        Assert.Throws<ArgumentNullException>(() => services.AddJsonLocalization(null!));
+    }
 }

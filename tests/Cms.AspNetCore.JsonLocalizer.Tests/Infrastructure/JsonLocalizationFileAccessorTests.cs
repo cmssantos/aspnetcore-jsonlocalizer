@@ -42,4 +42,13 @@ public class JsonLocalizationFileAccessorTests(LocalizationTestFixture fixture)
         var value = _accessor.GetValue("error.nonexistent", "en-US");
         Assert.Null(value);
     }
+
+    [Fact]
+    public void GetValue_ReturnsNull_WhenPathContinuesAfterLeafValue()
+    {
+        // "welcome" é uma string, então tentar acessar "welcome.anything" deve falhar
+        var value = _accessor.GetValue("welcome.anything", "en-US");
+
+        Assert.Null(value);
+    }
 }

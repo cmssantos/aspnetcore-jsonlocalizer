@@ -3,48 +3,106 @@ using System.Text.Json.Nodes;
 namespace Cms.AspNetCore.JsonLocalizer.Infrastructure;
 
 /// <summary>
-/// Provides access to JSON localization files and caches their content in memory.
+/// Provides access to localized strings stored in JSON files.
 /// </summary>
-/// <param name="basePath">The base directory path where localization JSON files are stored.</param>
+/// <remarks>
+/// This class handles loading, caching, and retrieving localized strings from JSON files
+/// organized by domain and culture.
+/// </remarks>
 public class JsonLocalizationFileAccessor(string basePath)
 {
     private readonly string _basePath = basePath;
-    private readonly Dictionary<string, JsonNode?> _cache = [];
+    private readonly Dictionary<string, Dictionary<string, JsonNode?>> _cache = [];
 
     /// <summary>
-    /// Retrieves the localized string value for the specified key and culture.
-    /// Supports nested keys separated by dots (e.g., "error.notFound").
+    /// Gets a localized string value from the appropriate JSON resource file.
     /// </summary>
-    /// <param name="key">The localization key, which can represent nested JSON properties separated by dots.</param>
-    /// <param name="culture">The culture code (e.g., "en-US", "pt-BR") corresponding to the JSON file name.</param>
+    /// <param name="domain">The domain (resource file name without extension or culture suffix).</param>
+    /// <param name="key">The key to look up, which can be a dot-separated path for nested JSON objects.</param>
+    /// <param name="culture">The primary culture to search for the value.</param>
+    /// <param name="fallbackCulture">Optional fallback culture to use if the value is not found in the primary culture.</param>
     /// <returns>
-    /// The localized string value if found; otherwise, <c>null</c>.
+    /// The localized string if found; otherwise, null.
     /// </returns>
-    public string? GetValue(string key, string culture)
+    public string? GetValue(string domain, string key, CultureInfo culture, CultureInfo? fallbackCulture = null)
     {
-        if (!_cache.TryGetValue(culture, out JsonNode? root))
+        foreach (CultureInfo cultureToTry in GetCultureFallbacks(culture, fallbackCulture))
         {
-            var file = Path.Combine(_basePath, $"{culture}.json");
-            if (!File.Exists(file))
+            if (!TryLoadFile(domain, cultureToTry.Name, out JsonNode? root))
             {
-                return null;
+                continue;
             }
 
-            root = JsonNode.Parse(File.ReadAllText(file));
-            _cache[culture] = root;
+            JsonNode? value = Traverse(root, key.Split('.'));
+            if (value is not null)
+            {
+                return value.ToString();
+            }
         }
 
-        return Traverse(root, key.Split('.'))?.ToString();
+        return null;
     }
 
     /// <summary>
-    /// Recursively traverses the JSON node tree based on the provided key parts.
+    /// Generates a sequence of cultures to try when looking up a localized value.
     /// </summary>
-    /// <param name="node">The current JSON node to traverse.</param>
-    /// <param name="parts">An array of strings representing the nested keys to traverse.</param>
-    /// <returns>
-    /// The final <see cref="JsonNode"/> corresponding to the key if found; otherwise, <c>null</c>.
-    /// </returns>
+    /// <param name="culture">The primary culture.</param>
+    /// <param name="defaultCulture">The fallback culture.</param>
+    /// <returns>A sequence of cultures in fallback order.</returns>
+    private static IEnumerable<CultureInfo> GetCultureFallbacks(CultureInfo culture, CultureInfo? defaultCulture)
+    {
+        yield return culture;
+
+        if (!string.IsNullOrEmpty(culture.Parent?.Name) && culture.Parent.Name != culture.Name)
+        {
+            yield return culture.Parent;
+        }
+
+        if (defaultCulture is not null)
+        {
+            yield return defaultCulture;
+        }
+    }
+
+    /// <summary>
+    /// Attempts to load a JSON file for the specified domain and culture.
+    /// </summary>
+    /// <param name="domain">The domain (resource file name without extension or culture suffix).</param>
+    /// <param name="cultureName">The culture name.</param>
+    /// <param name="root">When this method returns, contains the root JSON node if the file was loaded successfully; otherwise, null.</param>
+    /// <returns>true if the file was loaded successfully; otherwise, false.</returns>
+    private bool TryLoadFile(string domain, string cultureName, out JsonNode? root)
+    {
+        if (_cache.TryGetValue(domain, out Dictionary<string, JsonNode?>? domainCache) &&
+            domainCache.TryGetValue(cultureName, out root))
+        {
+            return root is not null;
+        }
+
+        var file = Path.Combine(_basePath, $"{domain}.{cultureName}.json");
+        root = null;
+
+        if (File.Exists(file))
+        {
+            root = JsonNode.Parse(File.ReadAllText(file));
+        }
+
+        if (!_cache.TryGetValue(domain, out Dictionary<string, JsonNode?>? value))
+        {
+            value = [];
+            _cache[domain] = value;
+        }
+        value[cultureName] = root;
+
+        return root is not null;
+    }
+
+    /// <summary>
+    /// Traverses a JSON node hierarchy using the specified path parts.
+    /// </summary>
+    /// <param name="node">The root JSON node to start traversal from.</param>
+    /// <param name="parts">The path parts representing the traversal path.</param>
+    /// <returns>The JSON node at the specified path if found; otherwise, null.</returns>
     private static JsonNode? Traverse(JsonNode? node, string[] parts)
     {
         foreach (var part in parts)
@@ -58,6 +116,7 @@ public class JsonLocalizationFileAccessor(string basePath)
                 return null;
             }
         }
+
         return node;
     }
 }

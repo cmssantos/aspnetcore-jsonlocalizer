@@ -1,36 +1,32 @@
 namespace Cms.AspNetCore.JsonLocalizer.Abstractions;
 
 /// <summary>
-/// Defines a contract for retrieving localized strings from JSON files.
-/// Supports simple and nested keys with or without format arguments.
+/// Interface for JSON-based string localization services.
+/// Provides methods to retrieve localized strings from JSON resources.
 /// </summary>
 public interface IJsonStringLocalizer
 {
     /// <summary>
-    /// Gets the localized string associated with the specified key.
+    /// Gets the localized string for the specified key.
     /// </summary>
-    /// <param name="key">
-    /// The key of the localized string.
-    /// Supports nested keys using dot notation, e.g., "errors.notFound.user".
-    /// </param>
+    /// <param name="key">The key of the string resource.</param>
     /// <returns>
-    /// The localized string if found; otherwise, the key itself.
+    /// The localized string. If the key is not found, returns the key itself or a default value
+    /// depending on implementation.
     /// </returns>
     string this[string key] { get; }
 
     /// <summary>
-    /// Gets the localized string associated with the specified key,
-    /// formatted using the provided arguments.
+    /// Gets the localized string for the specified key and formats it with the supplied arguments.
     /// </summary>
-    /// <param name="key">
-    /// The key of the localized string.
-    /// Supports nested keys using dot notation, e.g., "validation.required".
-    /// </param>
-    /// <param name="arguments">
-    /// Optional arguments to format the localized string using <c>string.Format</c>.
-    /// </param>
+    /// <param name="key">The key of the string resource.</param>
+    /// <param name="arguments">The arguments to format the string with.</param>
     /// <returns>
-    /// The formatted localized string if found; otherwise, the key with arguments.
+    /// The formatted localized string. If the key is not found, returns the key itself or a default value
+    /// depending on implementation.
     /// </returns>
+    /// <remarks>
+    /// This method uses composite formatting similar to <see cref="string.Format(string, object[])"/>.
+    /// </remarks>
     string this[string key, params object[] arguments] { get; }
 }

@@ -47,4 +47,12 @@ public class JsonStringLocalizerTests(LocalizationTestFixture fixture)
         // Assert
         Assert.Equal("nonexistent.key", result);
     }
+
+    [Fact]
+    public void GetValue_ReturnsNull_WhenPropertyMissingWithinJsonObject()
+    {
+        // level1 existe, mas dentro dele "missing" não existe.
+        var value = _accessor.GetValue("level1.missing", "en-US");
+        Assert.Null(value);
+    }
 }

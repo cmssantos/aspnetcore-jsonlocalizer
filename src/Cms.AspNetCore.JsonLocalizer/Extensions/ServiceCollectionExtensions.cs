@@ -1,69 +1,59 @@
-﻿using System.Globalization;
-using Cms.AspNetCore.JsonLocalizer.Abstractions;
+﻿using Cms.AspNetCore.JsonLocalizer.Abstractions;
 using Cms.AspNetCore.JsonLocalizer.Infrastructure;
 using Cms.AspNetCore.JsonLocalizer.Options;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Cms.AspNetCore.JsonLocalizer.Extensions;
 
 /// <summary>
-/// Provides extension methods for registering JSON localization services in the ASP.NET Core dependency injection container.
+/// Extension methods for setting up JSON-based localization services in an <see cref="IServiceCollection"/>.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds JSON localization services to the <see cref="IServiceCollection"/> with the specified configuration options.
+    /// Adds JSON-based localization services to the specified <see cref="IServiceCollection"/>.
     /// </summary>
-    /// <param name="services">The service collection to add the localization services to.</param>
-    /// <param name="configure">An action to configure <see cref="JsonLocalizationOptions"/> such as resource path and default culture.</param>
-    /// <returns>The updated <see cref="IServiceCollection"/> for chaining.</returns>
-    public static IServiceCollection AddJsonLocalization(this IServiceCollection services,
-    Action<JsonLocalizationOptions> configure)
+    /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+    /// <param name="setup">An optional action to configure the <see cref="JsonLocalizationOptions"/>.</param>
+    /// <returns>The same service collection so that multiple calls can be chained.</returns>
+    /// <remarks>
+    /// This method registers the required services for JSON localization:
+    /// <list type="bullet">
+    /// <item><description>JsonLocalizationOptions as a singleton</description></item>
+    /// <item><description>JsonLocalizationFileAccessor as a singleton</description></item>
+    /// </list>
+    /// </remarks>
+    public static IServiceCollection AddJsonLocalization(
+        this IServiceCollection services,
+        Action<JsonLocalizationOptions>? setup = null)
     {
-        ArgumentNullException.ThrowIfNull(services);
-        ArgumentNullException.ThrowIfNull(configure);
+        var options = new JsonLocalizationOptions();
+        setup?.Invoke(options);
 
-        IServiceCollection safeServices = services;
+        services.AddSingleton(options);
+        services.AddSingleton(new JsonLocalizationFileAccessor(options.ResourcesPath));
 
-        // Configure localization options
-        safeServices.Configure(configure);
+        return services;
+    }
 
-        // Register HttpContextAccessor to access HTTP context inside services
-        safeServices.AddHttpContextAccessor();
+    /// <summary>
+    /// Creates an <see cref="IJsonStringLocalizer"/> instance for the specified domain and culture.
+    /// </summary>
+    /// <param name="provider">The <see cref="IServiceProvider"/> to retrieve services from.</param>
+    /// <param name="domain">The domain (resource file name without extension or culture suffix).</param>
+    /// <param name="culture">The culture to use for localization. If null, the current culture is used.</param>
+    /// <returns>An <see cref="IJsonStringLocalizer"/> instance for the specified domain and culture.</returns>
+    /// <remarks>
+    /// This method creates a new instance of <see cref="JsonStringLocalizer"/> each time it's called.
+    /// It's not registered in the service collection as a singleton or scoped service.
+    /// </remarks>
+    public static IJsonStringLocalizer GetJsonLocalizer(
+        this IServiceProvider provider,
+        string domain,
+        CultureInfo? culture = null)
+    {
+        JsonLocalizationFileAccessor accessor = provider.GetRequiredService<JsonLocalizationFileAccessor>();
+        JsonLocalizationOptions options = provider.GetRequiredService<JsonLocalizationOptions>();
 
-        // Register a singleton JsonLocalizationFileAccessor to manage JSON files and caching
-        safeServices.AddSingleton(sp =>
-        {
-            JsonLocalizationOptions options = sp.GetRequiredService<IOptions<JsonLocalizationOptions>>().Value
-                ?? throw new InvalidOperationException("JsonLocalizationOptions is not configured.");
-
-            return new JsonLocalizationFileAccessor(options.ResourcesPath);
-        });
-
-        // Register scoped IJsonStringLocalizer that resolves culture from the HTTP request or falls back to default culture
-        safeServices.AddScoped<IJsonStringLocalizer>(sp =>
-        {
-            JsonLocalizationFileAccessor accessor = sp.GetRequiredService<JsonLocalizationFileAccessor>();
-
-            IHttpContextAccessor httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>()
-                ?? throw new InvalidOperationException("IHttpContextAccessor is not registered.");
-
-            HttpContext? httpContext = httpContextAccessor.HttpContext;
-
-            JsonLocalizationOptions? options = sp.GetRequiredService<IOptions<JsonLocalizationOptions>>()?.Value
-                ?? throw new InvalidOperationException("JsonLocalizationOptions is not configured.");
-
-            string? acceptLanguage = httpContext?.Request?.Headers["Accept-Language"].FirstOrDefault();
-
-            var culture = !string.IsNullOrWhiteSpace(acceptLanguage)
-                ? acceptLanguage
-                : options.DefaultCulture ?? CultureInfo.CurrentCulture.Name;
-
-            return new JsonStringLocalizer(accessor, culture);
-        });
-
-        return safeServices;
+        return new JsonStringLocalizer(accessor, domain, culture ?? CultureInfo.CurrentCulture, options);
     }
 }
