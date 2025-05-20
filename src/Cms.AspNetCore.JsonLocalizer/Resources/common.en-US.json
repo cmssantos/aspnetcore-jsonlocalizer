@@ -1,0 +1,6 @@
+{
+  "errors": {
+    "notFound": "Resource not found",
+    "serverError": "Server error occurred"
+  }
+}

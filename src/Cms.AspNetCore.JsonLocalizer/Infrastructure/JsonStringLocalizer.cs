@@ -44,17 +44,7 @@ public class JsonStringLocalizer(
     /// </remarks>
     private string Format(string key, object[] args)
     {
-<<<<<<< HEAD
-        var value = _accessor.GetValue(key, _culture);
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return key;
-        }
-
-        return args is { Length: > 0 } ? string.Format(value, args) : value;
-=======
         var template = _accessor.GetValue(_domain, key, _culture, _fallback);
         return string.Format(CultureInfo.CurrentCulture, template ?? key, args);
->>>>>>> b5ab56e0eb392866e06c70dd6ca196958840acda
     }
 }

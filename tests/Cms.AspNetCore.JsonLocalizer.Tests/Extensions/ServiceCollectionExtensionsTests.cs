@@ -1,6 +1,7 @@
 using Cms.AspNetCore.JsonLocalizer.Abstractions;
 using Cms.AspNetCore.JsonLocalizer.Extensions;
 using Cms.AspNetCore.JsonLocalizer.Infrastructure;
+using Cms.AspNetCore.JsonLocalizer.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,8 +27,8 @@ public class ServiceCollectionExtensionsTests
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        // Act
-        IJsonStringLocalizer localizer = provider.GetService<IJsonStringLocalizer>()!;
+        // Act - Use GetJsonLocalizer extension method instead
+        IJsonStringLocalizer localizer = provider.GetJsonLocalizer("common");
 
         // Assert
         Assert.NotNull(localizer);
@@ -35,9 +36,17 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public void AddJsonLocalization_ThrowsArgumentNull_WhenConfigureIsNull()
+    public void AddJsonLocalization_AcceptsNullSetup()
     {
+        // Arrange
         var services = new ServiceCollection();
-        Assert.Throws<ArgumentNullException>(() => services.AddJsonLocalization(null!));
+
+        // Act - This should not throw an exception
+        services.AddJsonLocalization(null);
+
+        // Assert
+        ServiceProvider provider = services.BuildServiceProvider();
+        Assert.NotNull(provider.GetRequiredService<JsonLocalizationFileAccessor>());
+        Assert.NotNull(provider.GetRequiredService<JsonLocalizationOptions>());
     }
 }

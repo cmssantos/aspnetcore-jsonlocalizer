@@ -1,7 +1,13 @@
 {
-  "errors": {
-    "notFound": {
-      "user": "User {0} not found."
-    }
+  "dateFormat": "MM/dd/yyyy",
+  "currency": {
+    "symbol": "U$",
+    "format": "{0} {1}"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "save": "Save",
+    "cancel": "Cancel"
   }
 }

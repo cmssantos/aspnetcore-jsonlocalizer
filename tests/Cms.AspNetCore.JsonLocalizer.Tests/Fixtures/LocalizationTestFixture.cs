@@ -13,11 +13,11 @@ public class LocalizationTestFixture : IDisposable
 
         Directory.CreateDirectory(ResourcesPath);
 
-        var filePath = Path.Combine(ResourcesPath, "en-US.json");
-
-        if (!File.Exists(filePath))
+        // Arquivo com formato {domain}.{cultureName}.json
+        var domainFilePath = Path.Combine(ResourcesPath, "common.en-US.json");
+        if (!File.Exists(domainFilePath))
         {
-            File.WriteAllText(filePath, """
+            File.WriteAllText(domainFilePath, """
             {
               "error": {
                 "notFound": "Resource not found",
@@ -29,6 +29,33 @@ public class LocalizationTestFixture : IDisposable
             }
             """, Encoding.UTF8);
         }
+
+        // Arquivo com formato {cultureName}.json (sem domínio)
+        var cultureFilePath = Path.Combine(ResourcesPath, "fr-FR.json");
+        if (!File.Exists(cultureFilePath))
+        {
+            File.WriteAllText(cultureFilePath, """
+            {
+              "greeting": "Bonjour, {0}!",
+              "farewell": "Au revoir!",
+              "error": {
+                "generic": "Une erreur s'est produite"
+              }
+            }
+            """, Encoding.UTF8);
+        }
+
+        // Arquivo que demonstra a precedência do domínio
+        var domainOverrideFilePath = Path.Combine(ResourcesPath, "common.fr-FR.json");
+        if (!File.Exists(domainOverrideFilePath))
+        {
+            File.WriteAllText(domainOverrideFilePath, """
+            {
+              "greeting": "Salut, {0}!",
+              "welcome": "Bienvenue, {0}!"
+            }
+            """, Encoding.UTF8);
+        }
     }
 
     protected virtual void Dispose(bool disposing)
@@ -37,10 +64,9 @@ public class LocalizationTestFixture : IDisposable
         {
             if (disposing)
             {
-                // Dispose managed resources here, if any
+                // Limpar arquivos temporários se necessário
             }
 
-            // Dispose unmanaged resources here, if any
             _disposed = true;
         }
     }

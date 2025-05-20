@@ -28,15 +28,25 @@ public class JsonLocalizationFileAccessor(string basePath)
     {
         foreach (CultureInfo cultureToTry in GetCultureFallbacks(culture, fallbackCulture))
         {
-            if (!TryLoadFile(domain, cultureToTry.Name, out JsonNode? root))
+            // Primeiro tenta carregar o arquivo específico do domínio
+            if (TryLoadFile(domain, cultureToTry.Name, out JsonNode? root))
             {
-                continue;
+                JsonNode? value = Traverse(root, key.Split('.'));
+                if (value is not null)
+                {
+                    return value.ToString();
+                }
             }
 
-            JsonNode? value = Traverse(root, key.Split('.'));
-            if (value is not null)
+            // Se a chave não foi encontrada no arquivo específico do domínio,
+            // tenta no arquivo apenas com a cultura
+            if (TryLoadCultureOnlyFile(cultureToTry.Name, out JsonNode? cultureRoot))
             {
-                return value.ToString();
+                JsonNode? value = Traverse(cultureRoot, key.Split('.'));
+                if (value is not null)
+                {
+                    return value.ToString();
+                }
             }
         }
 
@@ -73,6 +83,8 @@ public class JsonLocalizationFileAccessor(string basePath)
     /// <returns>true if the file was loaded successfully; otherwise, false.</returns>
     private bool TryLoadFile(string domain, string cultureName, out JsonNode? root)
     {
+        string cacheKey = $"{domain}:{cultureName}";
+
         if (_cache.TryGetValue(domain, out Dictionary<string, JsonNode?>? domainCache) &&
             domainCache.TryGetValue(cultureName, out root))
         {
@@ -91,6 +103,40 @@ public class JsonLocalizationFileAccessor(string basePath)
         {
             value = [];
             _cache[domain] = value;
+        }
+        value[cultureName] = root;
+
+        return root is not null;
+    }
+
+    /// <summary>
+    /// Attempts to load a JSON file for the specified culture only (without domain).
+    /// </summary>
+    /// <param name="cultureName">The culture name.</param>
+    /// <param name="root">When this method returns, contains the root JSON node if the file was loaded successfully; otherwise, null.</param>
+    /// <returns>true if the file was loaded successfully; otherwise, false.</returns>
+    private bool TryLoadCultureOnlyFile(string cultureName, out JsonNode? root)
+    {
+        string cacheKey = $"culture-only:{cultureName}";
+
+        if (_cache.TryGetValue(cacheKey, out Dictionary<string, JsonNode?>? cultureCache) &&
+            cultureCache.TryGetValue(cultureName, out root))
+        {
+            return root is not null;
+        }
+
+        var file = Path.Combine(_basePath, $"{cultureName}.json");
+        root = null;
+
+        if (File.Exists(file))
+        {
+            root = JsonNode.Parse(File.ReadAllText(file));
+        }
+
+        if (!_cache.TryGetValue(cacheKey, out Dictionary<string, JsonNode?>? value))
+        {
+            value = [];
+            _cache[cacheKey] = value;
         }
         value[cultureName] = root;
 
