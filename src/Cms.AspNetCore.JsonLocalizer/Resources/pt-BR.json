@@ -2,7 +2,9 @@
   "dateFormat": "dd/MM/yyyy",
   "currency": {
     "symbol": "R$",
-    "format": "{0} {1}"
+    "format": "{0}{1}",
+    "decimal": ",",
+    "thousand": "."
   },
   "common": {
     "yes": "Sim",

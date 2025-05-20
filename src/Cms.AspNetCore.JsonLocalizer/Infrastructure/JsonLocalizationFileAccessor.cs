@@ -117,9 +117,9 @@ public class JsonLocalizationFileAccessor(string basePath)
     /// <returns>true if the file was loaded successfully; otherwise, false.</returns>
     private bool TryLoadCultureOnlyFile(string cultureName, out JsonNode? root)
     {
-        string cacheKey = $"culture-only:{cultureName}";
+        const string CULTURE_ONLY_KEY = "culture-only";
 
-        if (_cache.TryGetValue(cacheKey, out Dictionary<string, JsonNode?>? cultureCache) &&
+        if (_cache.TryGetValue(CULTURE_ONLY_KEY, out Dictionary<string, JsonNode?>? cultureCache) &&
             cultureCache.TryGetValue(cultureName, out root))
         {
             return root is not null;
@@ -133,10 +133,10 @@ public class JsonLocalizationFileAccessor(string basePath)
             root = JsonNode.Parse(File.ReadAllText(file));
         }
 
-        if (!_cache.TryGetValue(cacheKey, out Dictionary<string, JsonNode?>? value))
+        if (!_cache.TryGetValue(CULTURE_ONLY_KEY, out Dictionary<string, JsonNode?>? value))
         {
             value = [];
-            _cache[cacheKey] = value;
+            _cache[CULTURE_ONLY_KEY] = value;
         }
         value[cultureName] = root;
 

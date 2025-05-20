@@ -1,8 +1,10 @@
 {
   "dateFormat": "MM/dd/yyyy",
   "currency": {
-    "symbol": "U$",
-    "format": "{0} {1}"
+    "symbol": "$",
+    "format": "{0}{1}",
+    "decimal": ".",
+    "thousand": ","
   },
   "common": {
     "yes": "Yes",
